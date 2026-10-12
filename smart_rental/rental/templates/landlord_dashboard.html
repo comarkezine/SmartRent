@@ -1,0 +1,52 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+
+    # Home
+    path('', views.home, name='home'),
+
+    # Login
+    path('tenant/login/', views.tenant_login, name='tenant_login'),
+    path('landlord/login/', views.landlord_login, name='landlord_login'),
+    path('manager/login/', views.manager_login, name='manager_login'),
+    path('admin/login/', views.admin_login, name='admin_login'),
+
+    # Dashboards
+    path(
+        'tenant/dashboard/',
+        views.tenant_dashboard,
+        name='tenant_dashboard'
+    ),
+
+    path(
+        'landlord/dashboard/',
+        views.landlord_dashboard,
+        name='landlord_dashboard'
+    ),
+
+    path(
+        'manager/dashboard/',
+        views.manager_dashboard,
+        name='manager_dashboard'
+    ),
+
+    path(
+        'admin/dashboard/',
+        views.admin_dashboard,
+        name='admin_dashboard'
+    ),
+
+    # Tenant functions
+    path(
+        'tenant/complaint/',
+        views.submit_complaint,
+        name='submit_complaint'
+    ),
+
+    path(
+        'tenant/payment/',
+        views.mpesa_payment,
+        name='mpesa_payment'
+    ),
+]

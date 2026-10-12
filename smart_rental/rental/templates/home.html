@@ -1,0 +1,381 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartRent | Smart Rental Management</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    >
+
+    <!-- Custom CSS -->
+    <link
+        rel="stylesheet"
+        href="{% static 'rental/css/style.css' %}"
+    >
+
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+<nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <i class="bi bi-buildings"></i>
+            SmartRent
+        </a>
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">
+                        Home
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#about">
+                        About Us
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#contact">
+                        Contact
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="btn nav-login"
+                       href="#login">
+                        Login
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+
+<!-- HERO -->
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-text">
+
+            <span class="hero-tag">
+                SMART RENTAL MANAGEMENT
+            </span>
+
+            <h1>
+                Manage Your Property
+                <span>Smarter.</span>
+            </h1>
+
+            <p>
+                A modern rental management platform for payments,
+                tenant feedback and intelligent payment tracking.
+            </p>
+
+            <a href="#login" class="hero-btn">
+                Get Started
+                <i class="bi bi-arrow-right"></i>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- LOGIN SECTION -->
+<section class="login-section" id="login">
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <span>GET STARTED</span>
+
+            <h2>
+                Welcome to SmartRent
+            </h2>
+
+            <p>
+                How would you like to access the system?
+                Select your role below.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4 justify-content-center">
+
+            <!-- TENANT -->
+            <div class="col-lg-3 col-md-6">
+
+                <a href="{% url 'tenant_login' %}"
+                   class="role-card">
+
+                    <div class="role-icon">
+                        <i class="bi bi-person"></i>
+                    </div>
+
+                    <h3>Tenant</h3>
+
+                    <p>
+                        Pay rent and submit complaints
+                        about your rental environment.
+                    </p>
+
+                    <span>
+                        Tenant Login
+                        <i class="bi bi-arrow-right"></i>
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- LANDLORD -->
+            <div class="col-lg-3 col-md-6">
+
+                <a href="{% url 'landlord_login' %}"
+                   class="role-card">
+
+                    <div class="role-icon">
+                        <i class="bi bi-house-door"></i>
+                    </div>
+
+                    <h3>Landlord</h3>
+
+                    <p>
+                        Monitor payments, complaints
+                        and tenant activities.
+                    </p>
+
+                    <span>
+                        Landlord Login
+                        <i class="bi bi-arrow-right"></i>
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- PROPERTY MANAGER -->
+            <div class="col-lg-3 col-md-6">
+
+                <a href="{% url 'manager_login' %}"
+                   class="role-card">
+
+                    <div class="role-icon">
+                        <i class="bi bi-buildings"></i>
+                    </div>
+
+                    <h3>Property Manager</h3>
+
+                    <p>
+                        Manage tenants, payments,
+                        complaints and properties.
+                    </p>
+
+                    <span>
+                        Manager Login
+                        <i class="bi bi-arrow-right"></i>
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- ADMIN -->
+            <div class="col-lg-3 col-md-6">
+
+                <a href="{% url 'admin_login' %}"
+                   class="role-card">
+
+                    <div class="role-icon">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+
+                    <h3>System Admin</h3>
+
+                    <p>
+                        Manage users and control
+                        system access.
+                    </p>
+
+                    <span>
+                        Admin Login
+                        <i class="bi bi-arrow-right"></i>
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ABOUT -->
+<section class="about-section" id="about">
+
+    <div class="container">
+
+        <div class="row align-items-center">
+
+            <div class="col-lg-6">
+
+                <span class="section-label">
+                    ABOUT SMARTRENT
+                </span>
+
+                <h2>
+                    A smarter approach to rental management.
+                </h2>
+
+                <p>
+                    SmartRent brings rental payments, tenant
+                    communication, complaints and predictive
+                    payment tracking into one platform.
+                </p>
+
+                <p>
+                    The system is designed to improve
+                    accountability, communication and proactive
+                    decision-making between rental stakeholders.
+                </p>
+
+            </div>
+
+            <div class="col-lg-6">
+
+                <div class="about-box">
+
+                    <div>
+                        <i class="bi bi-phone"></i>
+                        <strong>Digital Payments</strong>
+                        <small>Integrated M-Pesa payments</small>
+                    </div>
+
+                    <div>
+                        <i class="bi bi-graph-up-arrow"></i>
+                        <strong>Predictive Tracking</strong>
+                        <small>Identify potential late payments</small>
+                    </div>
+
+                    <div>
+                        <i class="bi bi-chat-square-text"></i>
+                        <strong>Tenant Feedback</strong>
+                        <small>Structured complaint management</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+
+    <div class="container text-center">
+
+        <span class="section-label">
+            CONTACT US
+        </span>
+
+        <h2>
+            Need assistance?
+        </h2>
+
+        <p>
+            Contact the SmartRent administration team
+            for support with the system.
+        </p>
+
+        <a href="mailto:admin@smartrent.com"
+           class="hero-btn">
+            Contact Support
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+
+    <div class="container">
+
+        <div class="footer-content">
+
+            <div>
+                <strong>
+                    <i class="bi bi-buildings"></i>
+                    SmartRent
+                </strong>
+
+                <p>
+                    Smart rental management made simple.
+                </p>
+            </div>
+
+            <div>
+                © 2026 SmartRent. All rights reserved.
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

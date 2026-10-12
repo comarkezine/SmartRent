@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartRent | M-Pesa Payment</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .payment-card {
+            background: white;
+            max-width: 500px;
+            margin: auto;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: #17365d;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: #17365d;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="payment-card">
+
+        <h1>Pay Rent with M-Pesa</h1>
+
+        <p>
+            M-Pesa Daraja payment integration
+            will be configured here.
+        </p>
+
+        <p>
+            Once connected, tenants will be able
+            to initiate rent payments securely.
+        </p>
+
+        <a href="{% url 'tenant_dashboard' %}"
+           class="back-button">
+            Back to Dashboard
+        </a>
+
+    </div>
+
+</body>
+</html>
