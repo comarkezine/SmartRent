@@ -1,52 +1,380 @@
-from django.urls import path
-from . import views
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landlord Dashboard | SmartRent</title>
 
-urlpatterns = [
+    <link rel="stylesheet" href="{% static 'rental/css/dashboards.css' %}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
 
-    # Home
-    path('', views.home, name='home'),
+<body>
 
-    # Login
-    path('tenant/login/', views.tenant_login, name='tenant_login'),
-    path('landlord/login/', views.landlord_login, name='landlord_login'),
-    path('manager/login/', views.manager_login, name='manager_login'),
-    path('admin/login/', views.admin_login, name='admin_login'),
+<div class="dashboard-layout">
 
-    # Dashboards
-    path(
-        'tenant/dashboard/',
-        views.tenant_dashboard,
-        name='tenant_dashboard'
-    ),
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-building"></i>
+            <span>SmartRent</span>
+        </div>
 
-    path(
-        'landlord/dashboard/',
-        views.landlord_dashboard,
-        name='landlord_dashboard'
-    ),
+        <div class="sidebar-label">LANDLORD PORTAL</div>
 
-    path(
-        'manager/dashboard/',
-        views.manager_dashboard,
-        name='manager_dashboard'
-    ),
+        <nav class="sidebar-nav">
+            <a href="{% url 'landlord_dashboard' %}" class="active">
+                <i class="fas fa-chart-pie"></i>
+                Dashboard
+            </a>
 
-    path(
-        'admin/dashboard/',
-        views.admin_dashboard,
-        name='admin_dashboard'
-    ),
+            <a href="#properties">
+                <i class="fas fa-building"></i>
+                My Properties
+            </a>
 
-    # Tenant functions
-    path(
-        'tenant/complaint/',
-        views.submit_complaint,
-        name='submit_complaint'
-    ),
+            <a href="#payments">
+                <i class="fas fa-credit-card"></i>
+                Rent Payments
+            </a>
 
-    path(
-        'tenant/payment/',
-        views.mpesa_payment,
-        name='mpesa_payment'
-    ),
-]
+            <a href="#complaints">
+                <i class="fas fa-comments"></i>
+                Tenant Complaints
+            </a>
+
+            
+
+            <a href="{% url 'rental_risk_prediction' %}"
+   class="prediction-btn">
+    📊 Rental Risk Prediction
+</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="{% url 'home' %}">
+                <i class="fas fa-house"></i>
+                Home
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+            <div>
+                <h2>Landlord Dashboard</h2>
+                <p>Manage your properties and rental operations.</p>
+            </div>
+
+            <div class="user-profile">
+                <div class="avatar">
+                    {{ request.user.username|slice:":1"|upper }}
+                </div>
+
+                <div>
+                    <strong>{{ request.user.username }}</strong>
+                    <small>Landlord</small>
+                </div>
+            </div>
+        </header>
+
+        <!-- WELCOME -->
+        <section class="welcome-banner">
+            <div>
+                <span class="eyebrow">PROPERTY OVERVIEW</span>
+                <h1>Welcome back, {{ request.user.username }}!</h1>
+                <p>
+                    Monitor rent payments, tenant feedback,
+                    and property performance from one place.
+                </p>
+            </div>
+
+            <div class="welcome-icon">
+                <i class="fas fa-city"></i>
+            </div>
+        </section>
+
+        <!-- SUMMARY CARDS -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="fas fa-building"></i>
+                </div>
+                <p>Total Properties</p>
+                <h3>{{ total_properties|default:"0" }}</h3>
+                <span>Registered properties</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <p>Payments Received</p>
+                <h3>{{ payments_received|default:"0" }}</h3>
+                <span>Recorded payments</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <p>Pending Payments</p>
+                <h3>{{ pending_payments|default:"0" }}</h3>
+                <span>Awaiting confirmation</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon red">
+                    <i class="fas fa-circle-exclamation"></i>
+                </div>
+                <p>Open Complaints</p>
+                <h3>{{ open_complaints|default:"0" }}</h3>
+                <span>Require attention</span>
+            </div>
+
+        </section>
+
+        <!-- PROPERTIES -->
+        <section class="content-card" id="properties">
+            <div class="section-heading">
+                
+                <div>
+                    <h3>My Properties</h3>
+                    <p>Overview of your registered rental properties.</p>
+                </div>
+                <a href="{% url 'register_property' %}"
+   class="btn btn-primary">
+
+    <i class="fas fa-plus"></i>
+    Add Property
+
+</a>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Location</th>
+                            <th>Units</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for property in properties %}
+                        <tr>
+                            <td>{{ property.name }}</td>
+                            <td>{{ property.location }}</td>
+                            <td>{{ property.units }}</td>
+                            <td>
+                                <span class="badge success">
+                                    {{ property.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="empty-state">
+                                No properties have been registered yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- PAYMENTS -->
+        <section class="content-card" id="payments">
+            <div class="section-heading">
+                <div>
+                    <h3>Recent Rent Payments</h3>
+                    <p>Track payments made by your tenants.</p>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tenant</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr>
+                            <td>{{ payment.tenant }}</td>
+                            <td>KES {{ payment.amount }}</td>
+                            <td>{{ payment.date }}</td>
+                            <td>
+                                <span class="badge">
+                                    {{ payment.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="empty-state">
+                                No rent payments have been recorded.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- COMPLAINTS -->
+        <section class="content-card" id="complaints">
+            <div class="section-heading">
+                <div>
+                    <h3>Tenant Complaints</h3>
+                    <p>Review issues reported by tenants.</p>
+                </div>
+            </div>
+
+  <div class="table-responsive">
+
+    <table class="data-table">
+
+        <thead>
+            <tr>
+                <th>Tenant</th>
+                <th>Property</th>
+                <th>Amount</th>
+                <th>Transaction ID</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for payment in payments %}
+
+            <tr>
+
+                <td>
+                    {{ payment.tenant.user.username }}
+                </td>
+
+                <td>
+                    {{ payment.tenant.property.name }}
+                </td>
+
+                <td>
+                    KES {{ payment.amount }}
+                </td>
+
+                <td>
+                    {{ payment.transaction_id|default:"—" }}
+                </td>
+
+                <td>
+                    {{ payment.created_at|date:"d M Y" }}
+                </td>
+
+                <td>
+
+                    {% if payment.status == "Completed" %}
+
+                        <span class="badge success">
+                            Completed
+                        </span>
+
+                    {% elif payment.status == "Pending" %}
+
+                        <span class="badge warning">
+                            Pending
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge danger">
+                            Failed
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+                <td colspan="6" class="empty-state">
+                    No payment records available.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+        <!-- PREDICTIONS -->
+        <section class="content-card" id="predictions">
+            <div class="section-heading">
+                <div>
+                    <h3>Predictive Payment Tracking</h3>
+                    <p>
+                        Identify tenants who may be at risk
+                        of making late rental payments.
+                    </p>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tenant</th>
+                            <th>Predicted Risk</th>
+                            <th>Confidence</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for prediction in predictions %}
+                        <tr>
+                            <td>{{ prediction.tenant }}</td>
+                            <td>{{ prediction.risk_level }}</td>
+                            <td>{{ prediction.confidence }}%</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="empty-state">
+                                Payment predictions are not available yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer class="dashboard-footer">
+            © 2026 SmartRent. All rights reserved.
+        </footer>
+
+    </main>
+</div>
+
+</body>
+</html>

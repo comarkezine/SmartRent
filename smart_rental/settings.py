@@ -1,18 +1,57 @@
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 load_dotenv(BASE_DIR / ".env")
+
+# ==========================================
+# M-PESA DARAJA CONFIGURATION
+# ==========================================
+
+MPESA_ENVIRONMENT = os.getenv(
+    "MPESA_ENVIRONMENT",
+    "sandbox"
+)
+
+MPESA_CONSUMER_KEY = os.getenv(
+    "MPESA_CONSUMER_KEY",
+    ""
+)
+
+MPESA_CONSUMER_SECRET = os.getenv(
+    "MPESA_CONSUMER_SECRET",
+    ""
+)
+
+MPESA_SHORTCODE = os.getenv(
+    "MPESA_SHORTCODE",
+    ""
+)
+
+MPESA_PASSKEY = os.getenv(
+    "MPESA_PASSKEY",
+    ""
+)
+
+MPESA_CALLBACK_URL = os.getenv(
+    "MPESA_CALLBACK_URL",
+    ""
+)
 
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+# Development settings
+DEBUG = True
+
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "distinct-width-timid.ngrok-free.dev/mpesa/callback/",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "https://distinct-width-timid.ngrok-free.dev/mpesa/callback/",
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -73,10 +112,10 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = "static/"
+# Static files configuration
 
-STATICFILES_DIRS = [
-    BASE_DIR / "smart_rental" / "rental" / "static"
-]
+STATIC_URL = "/static/"
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

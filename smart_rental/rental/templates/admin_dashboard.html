@@ -1,0 +1,316 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>System Admin Dashboard | SmartRent</title>
+
+    <link rel="stylesheet" href="{% static 'rental/css/dashboards.css' %}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+<div class="dashboard-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+            <i class="fas fa-shield-halved"></i>
+            <span>SmartRent</span>
+        </div>
+
+        <div class="sidebar-label">
+            SYSTEM ADMINISTRATION
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="{% url 'admin_dashboard' %}" class="active">
+                <i class="fas fa-gauge"></i>
+                Dashboard
+            </a>
+
+            <a href="#users">
+                <i class="fas fa-users"></i>
+                Manage Users
+            </a>
+
+            <a href="#roles">
+                <i class="fas fa-user-shield"></i>
+                User Roles
+            </a>
+
+            <a href="#activity">
+                <i class="fas fa-clock-rotate-left"></i>
+                System Activity
+            </a>
+
+            <a href="{% url 'admin:index' %}">
+                <i class="fas fa-screwdriver-wrench"></i>
+                Django Administration
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="{% url 'home' %}">
+                <i class="fas fa-house"></i>
+                Home
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div>
+                <h2>System Admin Dashboard</h2>
+                <p>Manage SmartRent users and system access.</p>
+            </div>
+
+            <div class="user-profile">
+                <div class="avatar">
+                    {{ request.user.username|slice:":1"|upper }}
+                </div>
+
+                <div>
+                    <strong>{{ request.user.username }}</strong>
+                    <small>System Administrator</small>
+                </div>
+            </div>
+        </header>
+
+        <!-- WELCOME -->
+        <section class="welcome-banner">
+            <div>
+                <span class="eyebrow">SYSTEM OVERVIEW</span>
+
+                <h1>
+                    Welcome, {{ request.user.username }}!
+                </h1>
+
+                <p>
+                    Monitor platform activity, manage users,
+                    and maintain secure access to SmartRent.
+                </p>
+            </div>
+
+            <div class="welcome-icon">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+        </section>
+
+        <!-- STATS -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="fas fa-users"></i>
+                </div>
+
+                <p>Total Users</p>
+                <h3>{{ total_users|default:"0" }}</h3>
+                <span>Registered accounts</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-user-check"></i>
+                </div>
+
+                <p>Active Users</p>
+                <h3>{{ active_users|default:"0" }}</h3>
+                <span>Enabled accounts</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <i class="fas fa-user-tag"></i>
+                </div>
+
+                <p>User Roles</p>
+                <h3>{{ total_roles|default:"0" }}</h3>
+                <span>Configured groups</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon red">
+                    <i class="fas fa-user-lock"></i>
+                </div>
+
+                <p>Inactive Users</p>
+                <h3>{{ inactive_users|default:"0" }}</h3>
+                <span>Disabled accounts</span>
+            </div>
+
+        </section>
+
+        <!-- USER MANAGEMENT -->
+        <section class="content-card" id="users">
+
+            <div class="section-heading">
+                <div>
+                    <h3>User Management</h3>
+                    <p>
+                        View registered SmartRent accounts
+                        and their access status.
+                    </p>
+                </div>
+
+                <a href="{% url 'admin:auth_user_changelist' %}"
+                   class="primary-button">
+                    <i class="fas fa-user-plus"></i>
+                    Manage Users
+                </a>
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Last Login</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for user in users %}
+
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+
+                            <td>
+                                {% if user.is_active %}
+                                    <span class="badge success">Active</span>
+                                {% else %}
+                                    <span class="badge danger">Inactive</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ user.last_login|date:"d M Y, H:i"|default:"Never" }}
+                            </td>
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+                            <td colspan="4" class="empty-state">
+                                No users found.
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </div>
+        </section>
+
+        <!-- ROLES -->
+        <section class="content-card" id="roles">
+
+            <div class="section-heading">
+                <div>
+                    <h3>User Roles</h3>
+                    <p>Configured access groups in SmartRent.</p>
+                </div>
+
+                <a href="{% url 'admin:auth_group_changelist' %}"
+                   class="primary-button">
+                    Manage Roles
+                </a>
+            </div>
+
+            <div class="role-grid">
+
+                {% for role in roles %}
+
+                <div class="role-card">
+                    <i class="fas fa-user-shield"></i>
+                    <h4>{{ role.name }}</h4>
+                    <p>Configured user group</p>
+                </div>
+
+                {% empty %}
+
+                <p class="empty-state">
+                    No roles have been configured.
+                </p>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+        <!-- ACTIVITY -->
+        <section class="content-card" id="activity">
+
+            <div class="section-heading">
+                <div>
+                    <h3>System Activity</h3>
+                    <p>Recent administrative activity.</p>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Administrator</th>
+                            <th>Action</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for activity in activities %}
+
+                        <tr>
+                            <td>{{ activity.user }}</td>
+                            <td>{{ activity.action }}</td>
+                            <td>{{ activity.date }}</td>
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+                            <td colspan="3" class="empty-state">
+                                No recent administrative activity.
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+        <footer class="dashboard-footer">
+            © 2026 SmartRent. System Administration.
+        </footer>
+
+    </main>
+</div>
+
+</body>
+</html>

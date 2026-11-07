@@ -4,91 +4,217 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Tenant Login | SmartRent</title>
+    <title>{% block title %}Login | SmartRent{% endblock %}</title>
 
     <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <link rel="stylesheet"
-          href="{% static 'rental/css/style.css' %}">
-
+          href="{% static 'rental/css/login.css' %}">
 </head>
 
-<body class="login-page">
+<body>
 
 <div class="login-container">
 
-    <div class="login-card">
+    <!-- LEFT BRAND PANEL -->
+    <section class="login-brand">
 
-        <div class="login-logo">
-            <i class="bi bi-person"></i>
+        <div class="brand-logo">
+            <i class="fa-solid fa-building"></i>
+            <span>SmartRent<span style="color:#d4a853;">.</span></span>
         </div>
 
-        <h2>Tenant Login</h2>
+        <div class="brand-content">
 
-        <p>
-            Access your rental account
-        </p>
+            <div class="brand-badge">
+                <i class="fa-solid fa-shield-halved"></i>
+                SMART RENTAL MANAGEMENT
+            </div>
 
-        <form method="POST"
-              action="{% url 'tenant_login' %}">
+            <h1>
+                {% block brand_heading %}
+                Smarter Living.<br>
+                <span>Better Management.</span>
+                {% endblock %}
+            </h1>
 
-            {% csrf_token %}
+            <p>
+                {% block brand_description %}
+                Experience a seamless way to manage your rental experience.
+                {% endblock %}
+            </p>
 
-            <div class="form-group">
+            <div class="brand-features">
+                {% block brand_features %}
+                {% endblock %}
+            </div>
 
-                <label>Email Address</label>
+        </div>
 
-                <input type="email"
-                       name="email"
-                       placeholder="Enter your email"
-                       required>
+        <div class="brand-footer">
+            © SmartRent. Simplifying property management.
+        </div>
+
+    </section>
+
+    <!-- RIGHT LOGIN PANEL -->
+    <main class="login-main">
+
+        <div class="login-card">
+
+            <div class="login-top">
+
+                <div class="eyebrow">
+                    SECURE ACCOUNT ACCESS
+                </div>
+
+                <h2>
+                    {% block login_heading %}
+                    Welcome Back
+                    {% endblock %}
+                </h2>
+
+                <p>
+                    {% block login_description %}
+                    Enter your account credentials to continue.
+                    {% endblock %}
+                </p>
 
             </div>
 
+            {% if login_error %}
+                <div class="login-error" role="alert">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    {{ login_error }}
+                </div>
+            {% endif %}
 
-            <div class="form-group">
+            <form method="POST"
+                  action="{% block form_action %}{% endblock %}">
 
-                <label>Password</label>
+                {% csrf_token %}
 
-                <input type="password"
-                       name="password"
-                       placeholder="Enter your password"
-                       required>
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address or Username
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-regular fa-envelope"></i>
+
+                        <input
+                            type="text"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email or username"
+                            autocomplete="username"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            onclick="togglePassword()"
+                            aria-label="Show password"
+                            aria-pressed="false"
+                        >
+                            <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <button type="submit" class="login-btn">
+
+                    Sign In
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+            </form>
+
+            <div class="login-divider">
+                SMARTRENT
+            </div>
+
+            <a href="{% url 'home' %}" class="back-home">
+                <i class="fa-solid fa-arrow-left"></i>
+                Back to Homepage
+            </a>
+
+            <div class="login-security">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <p>
+                    Your account is protected by secure authentication.
+                    Only authorized users can access this dashboard.
+                </p>
 
             </div>
 
-{% if login_error %}
-    <p style="color: #dc3545; font-size: 14px;">
-        {{ login_error }}
-    </p>
-{% endif %}
-            <button type="submit"
-                    class="login-submit">
+        </div>
 
-                Login
-
-            </button>
-
-        </form>
-
-
-        <a href="{% url 'home' %}"
-           class="back-home">
-
-            ← Back to Home
-
-        </a>
-
-    </div>
+    </main>
 
 </div>
+
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById("password");
+    const eyeIcon = document.getElementById("eyeIcon");
+    const button = document.querySelector(".toggle-password");
+
+    const isHidden = passwordInput.type === "password";
+
+    passwordInput.type = isHidden ? "text" : "password";
+
+    eyeIcon.className = isHidden
+        ? "fa-regular fa-eye-slash"
+        : "fa-regular fa-eye";
+
+    button.setAttribute(
+        "aria-label",
+        isHidden ? "Hide password" : "Show password"
+    );
+
+    button.setAttribute(
+        "aria-pressed",
+        String(isHidden)
+    );
+}
+</script>
 
 </body>
 </html>

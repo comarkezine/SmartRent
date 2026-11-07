@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,61 +9,692 @@
 
     <title>SmartRent | M-Pesa Payment</title>
 
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
     <style>
+        :root {
+            --primary: #064e3b;
+            --primary-dark: #022c22;
+            --primary-light: #047857;
+            --gold: #d4a853;
+            --background: #f4f7f5;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f7fb;
-            text-align: center;
-            padding: 80px 20px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
         }
 
-        .payment-card {
-            background: white;
-            max-width: 500px;
-            margin: auto;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        .navbar {
+            background: var(--primary-dark);
+            color: white;
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        h1 {
-            color: #17365d;
+        .logo {
+            font-size: 25px;
+            font-weight: 800;
         }
 
-        .back-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 12px 20px;
-            background: #17365d;
+        .logo i,
+        .logo span {
+            color: var(--gold);
+        }
+
+        .navbar a {
             color: white;
             text-decoration: none;
-            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .navbar a:hover {
+            color: var(--gold);
+        }
+
+        .page-container {
+            max-width: 1100px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .page-heading {
+            margin-bottom: 30px;
+        }
+
+        .page-heading h1 {
+            font-size: 32px;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .payment-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 32px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.045);
+            border: 1px solid var(--border);
+        }
+
+        .card h2 {
+            font-size: 21px;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .mpesa-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ecfdf5;
+            color: var(--primary-light);
+            padding: 9px 15px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 23px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 17px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            height: 54px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 0 15px 0 48px;
+            font-size: 15px;
+            background: #fafafa;
+            transition: 0.3s;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(4, 120, 87, 0.08);
+        }
+
+        .pay-button {
+            width: 100%;
+            height: 55px;
+            border: none;
+            border-radius: 10px;
+            background: var(--primary);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .pay-button:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .pay-button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .payment-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .payment-notice {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1d4ed8;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .security-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 10px;
+            color: #166534;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .summary-row span:first-child {
+            color: var(--muted);
+        }
+
+        .summary-row strong {
+            text-align: right;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .instructions {
+            margin-top: 28px;
+        }
+
+        .instructions h3 {
+            font-size: 16px;
+            color: var(--primary-dark);
+            margin-bottom: 18px;
+        }
+
+        .instruction {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            margin-bottom: 18px;
+        }
+
+        .instruction-number {
+            width: 29px;
+            height: 29px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ecfdf5;
+            color: var(--primary);
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .instruction p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .history-card {
+            margin-top: 25px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            min-width: 560px;
+        }
+
+        th {
+            background: #f8faf9;
+            color: var(--muted);
+            padding: 15px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 17px 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--muted);
+            padding: 30px;
+        }
+
+        @media (max-width: 800px) {
+            .payment-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .page-container {
+                margin: 30px auto;
+            }
+
+            .card {
+                padding: 24px;
+            }
+
+            .page-heading h1 {
+                font-size: 26px;
+            }
+
+            .navbar {
+                padding: 18px 5%;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="payment-card">
+    <!-- NAVIGATION -->
+    <nav class="navbar">
 
-        <h1>Pay Rent with M-Pesa</h1>
+        <div class="logo">
+            <i class="fa-solid fa-building"></i>
+            SmartRent<span>.</span>
+        </div>
 
-        <p>
-            M-Pesa Daraja payment integration
-            will be configured here.
-        </p>
-
-        <p>
-            Once connected, tenants will be able
-            to initiate rent payments securely.
-        </p>
-
-        <a href="{% url 'tenant_dashboard' %}"
-           class="back-button">
+        <a href="{% url 'tenant_dashboard' %}">
+            <i class="fa-solid fa-arrow-left"></i>
             Back to Dashboard
         </a>
 
-    </div>
+    </nav>
+
+    <main class="page-container">
+
+        <div class="page-heading">
+            <h1>Pay Rent with M-Pesa</h1>
+            <p>
+                Make your rent payment securely through M-Pesa.
+                Enter your payment details to initiate an STK Push request.
+            </p>
+        </div>
+
+        <div class="payment-layout">
+
+            <!-- PAYMENT FORM -->
+            <section class="card">
+
+                <div class="mpesa-badge">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                    M-PESA PAYMENT
+                </div>
+
+                <h2>Make a Payment</h2>
+
+                <p class="card-description">
+                    Enter your M-Pesa phone number and the amount
+                    you would like to pay.
+                </p>
+
+                {% if payment_error %}
+                    <div class="payment-error" role="alert">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        {{ payment_error }}
+                    </div>
+                {% endif %}
+
+                {% if payment_notice %}
+                    <div class="payment-notice" role="status">
+                        <i class="fa-solid fa-circle-info"></i>
+                        {{ payment_notice }}
+                    </div>
+                {% endif %}
+
+                {% if tenant %}
+
+                    <form
+                        method="POST"
+                        action="{% url 'initiate_mpesa_payment' %}"
+                        id="paymentForm"
+                    >
+
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="phone_number">
+                                M-Pesa Phone Number
+                            </label>
+
+                            <div class="input-wrapper">
+
+                                <i class="fa-solid fa-phone"></i>
+
+                                <input
+                                    type="tel"
+                                    id="phone_number"
+                                    name="phone_number"
+                                    placeholder="07XXXXXXXX"
+                                    value="{{ tenant.phone_number }}"
+                                    autocomplete="tel"
+                                    required
+                                >
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="amount">
+                                Payment Amount (KES)
+                            </label>
+
+                            <div class="input-wrapper">
+
+                                <i class="fa-solid fa-money-bill-wave"></i>
+
+                                <input
+                                    type="number"
+                                    id="amount"
+                                    name="amount"
+                                    min="1"
+                                    step="1"
+                                    value="{{ tenant.monthly_rent }}"
+                                    required
+                                >
+
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="pay-button"
+                            id="payButton"
+                        >
+                            <i class="fa-solid fa-lock"></i>
+                            Pay Securely with M-Pesa
+                        </button>
+
+                    </form>
+
+                    <div class="security-note">
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        <span>
+                            Your M-Pesa PIN is entered on your phone,
+                            not on SmartRent. Payment confirmation
+                            may take a few moments.
+                        </span>
+                    </div>
+
+                {% else %}
+
+                    <div class="payment-error">
+                        Your account is not linked to an active tenancy.
+                        Contact your property administrator.
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+            <!-- PAYMENT SUMMARY -->
+            <aside class="card">
+
+                <h2>Payment Summary</h2>
+
+                <p class="card-description">
+                    Review your rental information before proceeding.
+                </p>
+
+                <div class="summary-row">
+                    <span>Tenant</span>
+                    <strong>{{ request.user.username }}</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Property</span>
+                    <strong>
+                        {{ tenant.property.name|default:"Not assigned" }}
+                    </strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Unit Number</span>
+                    <strong>
+                        {{ tenant.unit_number|default:"—" }}
+                    </strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Monthly Rent</span>
+                    <strong>
+                        KES {{ tenant.monthly_rent|default:"0.00" }}
+                    </strong>
+                </div>
+
+                <div class="instructions">
+
+                    <h3>How to Pay</h3>
+
+                    <div class="instruction">
+                        <div class="instruction-number">1</div>
+                        <p>
+                            Enter your registered M-Pesa phone number.
+                        </p>
+                    </div>
+
+                    <div class="instruction">
+                        <div class="instruction-number">2</div>
+                        <p>
+                            Confirm the amount and click
+                            <strong>Pay Securely with M-Pesa</strong>.
+                        </p>
+                    </div>
+
+                    <div class="instruction">
+                        <div class="instruction-number">3</div>
+                        <p>
+                            If an STK Push appears on your phone,
+                            enter your M-Pesa PIN to authorize payment.
+                        </p>
+                    </div>
+
+                    <div class="instruction">
+                        <div class="instruction-number">4</div>
+                        <p>
+                            Wait for payment confirmation.
+                            Your payment history will update once
+                            the transaction is confirmed.
+                        </p>
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+        <!-- PAYMENT HISTORY -->
+        <section class="card history-card">
+
+            <h2>Recent Payment History</h2>
+
+            <p class="card-description">
+                View the status of your recent rent payment requests.
+            </p>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Phone Number</th>
+                            <th>Transaction ID</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for payment in payments %}
+
+                            <tr>
+
+                                <td>
+                                    {{ payment.created_at|date:"d M Y, H:i" }}
+                                </td>
+
+                                <td>
+                                    KES {{ payment.amount }}
+                                </td>
+
+                                <td>
+                                    {{ payment.phone_number }}
+                                </td>
+
+                                <td>
+                                    {{ payment.transaction_id|default:"—" }}
+                                </td>
+
+                                <td>
+
+                                    {% if payment.status == "Completed" %}
+
+                                        <span class="status status-completed">
+                                            Completed
+                                        </span>
+
+                                    {% elif payment.status == "Pending" %}
+
+                                        <span class="status status-pending">
+                                            Pending
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="status status-failed">
+                                            Failed
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+                                <td colspan="5" class="empty-state">
+                                    No payment records available yet.
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+        const paymentForm = document.getElementById("paymentForm");
+
+        if (paymentForm) {
+            paymentForm.addEventListener("submit", function () {
+
+                const button = document.getElementById("payButton");
+
+                button.disabled = true;
+
+                button.innerHTML =
+                    '<i class="fa-solid fa-spinner fa-spin"></i> Processing Request...';
+
+            });
+        }
+    </script>
 
 </body>
 </html>
